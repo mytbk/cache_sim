@@ -1,0 +1,8 @@
+writeb 0 aa
+readd 1000
+writed 1f deadbeef
+writed 2000 11224488
+readsb 0
+inval
+readb 2000
+readsb 2000
