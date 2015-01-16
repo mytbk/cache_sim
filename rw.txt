@@ -1,6 +1,6 @@
 writeb 0 aa
 readd 1000
-writed 1f deadbeef
+writed 101f deadbeef
 writed 2000 11224488
 readsb 0
 inval
