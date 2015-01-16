@@ -89,6 +89,7 @@ linefill(cache_t *ch, addr_t addr)
       lru = i;
       break;
     } else if (myset[i].lastvisit<ltime) {
+      ltime = myset[i].lastvisit;
       lru = i;
     }
   }
