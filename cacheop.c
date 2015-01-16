@@ -36,10 +36,12 @@ get16(short *data, int ext)
 static void*
 cache_data_ptr(cache_t *c, addr_t addr, block_t **blk_save)
 {
+  printf("address 0x%x: ", addr);
   unsigned offset = addr&((1<<c->bLine)-1);
   addr >>= c->bLine;
   unsigned setidx = addr&((1<<c->bSet)-1);
   addr_t tag = addr>>c->bSet;
+  printf("set=%d, tag=0x%x...", setidx, tag);
   block_t *blk=NULL;
   for (int i=0; i<c->nWay; i++) {
     if ((c->blocks[setidx][i].state&C_VALID)
@@ -51,9 +53,12 @@ cache_data_ptr(cache_t *c, addr_t addr, block_t **blk_save)
     *blk_save = blk;
   }
   if (blk==NULL) {
+    puts("MISS");
     return NULL;
+  } else {
+    puts("HIT");
+    return blk->data+offset;
   }
-  return blk->data+offset;
 }
 
 static void
@@ -108,14 +113,11 @@ mem_read(cache_t *c, addr_t addr, access_t op)
   assert(op.rw==0);
   assert(addr%op.len==0);
   block_t *blk;
+  printf("trying to read 0x%x from cache...\n", addr);
   void *ptr = cache_data_ptr(c, addr, &blk);
-  printf("trying to read 0x%x from cache...", addr);
   if (ptr==NULL) {
-    printf("MISS\n");
     linefill(c, addr);
     ptr = cache_data_ptr(c, addr, &blk);
-  } else {
-    printf("HIT\n");
   }
   c->acctime++;
   blk->lastvisit = c->acctime;
@@ -144,14 +146,11 @@ mem_write(cache_t *c, addr_t addr, unsigned data, access_t op)
   assert(op.rw==1);
   assert(addr%op.len==0);
   block_t *blk;
+  printf("trying to write to cache, memory address=0x%x...\n", addr);
   void *ptr = cache_data_ptr(c, addr, &blk);
-  printf("trying to write to cache, memory address=0x%x...", addr);
   if (ptr==NULL) {
-    printf("MISS\n");
     linefill(c, addr);
     ptr = cache_data_ptr(c, addr, &blk);
-  } else {
-    printf("HIT\n");
   }
   c->acctime++;
   blk->lastvisit = c->acctime;

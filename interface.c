@@ -13,7 +13,7 @@ read_data(addr_t addr, int len, int ext)
 {
   access_t ac;
   unsigned data;
-  printf("reading data from address %x, len=%d\n", addr, len);
+  printf("reading data from address 0x%x, len=%d\n", addr, len);
   ac.rw = 0;
   ac.len = len;
   ac.ext = ext;
