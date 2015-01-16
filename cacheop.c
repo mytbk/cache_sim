@@ -88,7 +88,7 @@ linefill(cache_t *ch, addr_t addr)
     }
   }
   // fill this line
-  if (myset[lru].state&C_VALID) {
+  if ((myset[lru].state&C_VALID) && (myset[lru].state&C_DIRTY)) {
     write_back(ch, idx, lru);
   }
   myset[lru].state = C_VALID;
